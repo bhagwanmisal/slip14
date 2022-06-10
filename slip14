@@ -1,0 +1,138 @@
+#include <stdio.h>
+#define MAX(a,b) a>b?a:b
+#define MAXIMUM(a,b,c) MAX(a,b)>c?MAX(a,b):c
+int main()
+{
+ int a,b,c;
+ printf("Enter three numbers::\n");
+ scanf("%d%d%d",&a,&b,&c);
+ printf("Maximum no is:%d\n",MAXIMUM(a,b,c));
+}
+yash@lenovo:~/slip14$ ./a.out
+Enter three numbers::
+1
+2
+3
+Maximum no is:3
+
+
+#include <stdio.h>
+struct student
+{
+ int rollno;
+ char name[20];
+ float percentage;
+}s[100];
+int main()
+{
+ int i,n,ch;
+ printf("Enter limit:\n");
+ scanf("%d",&n);
+ for(i=0;i<n;i++)
+ {
+ printf("Enter roll no,name,percentage of student\n");
+ scanf("%d%s%f",&s[i].rollno,s[i].name,&s[i].percentage);
+ }
+ printf("MENU\n1.Display all students\n2.Display all students having percentage less than 60\n");
+ printf("Enter your choice::\n");
+ scanf("%d",&ch);
+ switch(ch)
+ {
+ case 1: for(i=0;i<n;i++)
+ {
+ printf("Roll no=%d\nName=%s\nPercentage=%f\n",s[i].rollno,s[i].name,s[i].percentage);
+ }
+ case 2: for(i=0;i<n;i++)
+ {
+ if(s[i].percentage<60)
+ printf("Roll no=%d\nName=%s\nPercentage=%f\n",s[i].rollno,s[i].name,s[i].percentage);
+ }
+ }
+}
+
+yash@lenovo:~/slip14$ gcc qB.c
+yash@lenovo:~/slip14$ ./a.out
+Enter limit:
+2
+Enter roll no,name,percentage of student
+1 yash 50
+Enter roll no,name,percentage of student
+2 kartik 70
+MENU
+1.Display all students
+2.Display all students having percentage less than 60
+Enter your choice::
+1
+Roll no=1
+Name=yash
+Percentage=50.000000
+Roll no=2
+Name=kartik
+Percentage=70.000000
+Roll no=1
+Name=yash
+Percentage=50.000000
+yash@lenovo:~/slip14$ ./a.out
+Enter limit:
+2
+Enter roll no,name,percentage of student
+1 yash 50
+Enter roll no,name,percentage of student
+2 kartik 70
+MENU
+1.Display all students
+2.Display all students having percentage less than 60
+Enter your choice::
+2
+Roll no=1
+Name=yash
+Percentage=50.000000
+
+
+
+RDBMS
+slip14=# create table customer(cno int primary key,cname varchar(20),city varchar(30));
+CREATE TABLE
+slip14=# insert into customer values(1,'Yash','Shrirampur');
+INSERT 0 1
+slip14=# insert into customer values(2,'Kartik','Belapur');
+INSERT 0 1
+
+slip14=# create table account(accno int primary key,acc_type varchar(10),opening_date 
+date,balance money,c_no int references customer(cno));
+CREATE TABLE
+slip14=# insert into account values(110,'saving','2018-08-16',500,1);
+INSERT 0 1
+slip14=# insert into account values(111,'saving','2015-06-25',500,2);
+INSERT 0 1
+slip14=# insert into account values(112,'current','2017-06-25',5000,2);
+INSERT 0 1
+slip14=# insert into account values(113,'current','2016-10-12',8000,1);
+INSERT 0 1
+
+
+slip14=# create or replace function fun() returns void
+slip14-# as
+slip14-# $$
+slip14$# declare
+slip14$# c cursor for select * from customer,account where customer.cno=account.c_no
+slip14$# AND customer.city='Shrirampur';
+slip14$# r customer%rowtype;
+slip14$# begin
+slip14$# for r in c
+slip14$# loop
+slip14$# raise notice'Customer no=%',r.cno;
+slip14$# raise notice'Name=%',r.cname;
+slip14$# raise notice'City=%',r.city;
+slip14$# end loop;
+slip14$# end;
+slip14$# $$
+slip14-# language plpgsql;
+CREATE FUNCTION
+slip14=# select fun();
+NOTICE: Customer no=1
+NOTICE: Name=Yash
+NOTICE: City=Shrirampur
+NOTICE: Customer no=1
+NOTICE: Name=Yash
+NOTICE: City=Shrirampur
